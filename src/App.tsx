@@ -39,16 +39,31 @@ function parseValores(text: string, type: ValorType): Valor[] {
 
 const fmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })
 
+const STORAGE_KEY = 'valores-app-data'
+
+function loadStorage(): { textSaida: string; textEntrada: string } {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    return raw ? JSON.parse(raw) : { textSaida: '', textEntrada: '' }
+  } catch {
+    return { textSaida: '', textEntrada: '' }
+  }
+}
+
 export default function App() {
   const [showInput, setShowInput] = useState(false)
-  const [textSaida, setTextSaida] = useState('')
-  const [textEntrada, setTextEntrada] = useState('')
-  const [valores, setValores] = useState<Valor[]>([])
+  const [textSaida, setTextSaida] = useState(() => loadStorage().textSaida)
+  const [textEntrada, setTextEntrada] = useState(() => loadStorage().textEntrada)
+  const [valores, setValores] = useState<Valor[]>(() => {
+    const { textSaida, textEntrada } = loadStorage()
+    return [...parseValores(textSaida, 'saida'), ...parseValores(textEntrada, 'entrada')]
+  })
 
   const handleApply = (ts: string, te: string) => {
     setTextSaida(ts)
     setTextEntrada(te)
     setValores([...parseValores(ts, 'saida'), ...parseValores(te, 'entrada')])
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ textSaida: ts, textEntrada: te }))
     setShowInput(false)
   }
 
