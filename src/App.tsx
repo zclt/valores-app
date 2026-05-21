@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import ValoresInput from './components/ValoresInput'
 import ValorCard from './components/ValorCard'
+import ValoresChart from './components/ValoresChart'
 import './App.css'
 
 export type ValorType = 'saida' | 'entrada'
@@ -134,6 +135,15 @@ export default function App() {
             </div>
           </div>
         </div>
+      )}
+
+      {hasValues && (
+        <ValoresChart
+          saidas={saidas}
+          entradas={entradas}
+          totalSaidas={totalSaidas}
+          totalEntradas={totalEntradas}
+        />
       )}
 
       {showInput && (
