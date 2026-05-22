@@ -1,9 +1,12 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import ValoresInput from './components/ValoresInput'
 import ValorCard from './components/ValorCard'
 import ValoresChart from './components/ValoresChart'
 import ShareMenu from './components/ShareMenu'
+import LoginScreen from './components/LoginScreen'
 import { generateShareImage } from './utils/shareImage'
+import { useAuth } from './hooks/useAuth'
+import { useValoresData } from './hooks/useValoresData'
 import './App.css'
 
 export type ValorType = 'saida' | 'entrada'
@@ -42,33 +45,24 @@ function parseValores(text: string, type: ValorType): Valor[] {
 
 const fmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })
 
-const STORAGE_KEY = 'valores-app-data'
-
-function loadStorage(): { textSaida: string; textEntrada: string } {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    return raw ? JSON.parse(raw) : { textSaida: '', textEntrada: '' }
-  } catch {
-    return { textSaida: '', textEntrada: '' }
-  }
-}
-
 export default function App() {
+  const { user, loading: authLoading, loginLoading, login, logout } = useAuth()
+  const { data, loading: dataLoading, save } = useValoresData(user?.uid ?? null)
+
   const [showInput, setShowInput] = useState(false)
   const [showShareMenu, setShowShareMenu] = useState(false)
   const [shareLoading, setShareLoading] = useState<'image' | 'text' | null>(null)
-  const [textSaida, setTextSaida] = useState(() => loadStorage().textSaida)
-  const [textEntrada, setTextEntrada] = useState(() => loadStorage().textEntrada)
-  const [valores, setValores] = useState<Valor[]>(() => {
-    const { textSaida, textEntrada } = loadStorage()
-    return [...parseValores(textSaida, 'saida'), ...parseValores(textEntrada, 'entrada')]
-  })
+  const [valores, setValores] = useState<Valor[]>([])
 
-  const handleApply = (ts: string, te: string) => {
-    setTextSaida(ts)
-    setTextEntrada(te)
-    setValores([...parseValores(ts, 'saida'), ...parseValores(te, 'entrada')])
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ textSaida: ts, textEntrada: te }))
+  useEffect(() => {
+    setValores([
+      ...parseValores(data.textSaida, 'saida'),
+      ...parseValores(data.textEntrada, 'entrada'),
+    ])
+  }, [data])
+
+  const handleApply = async (ts: string, te: string) => {
+    await save({ textSaida: ts, textEntrada: te })
     setShowInput(false)
   }
 
@@ -80,6 +74,8 @@ export default function App() {
   const entradas = valores.filter(v => v.type === 'entrada')
   const totalSaidas = saidas.reduce((s, v) => s + v.value, 0)
   const totalEntradas = entradas.reduce((s, v) => s + v.value, 0)
+  const saldo = totalEntradas - totalSaidas
+  const hasValues = valores.length > 0
 
   const handleShareImage = async () => {
     setShareLoading('image')
@@ -116,10 +112,8 @@ export default function App() {
         entradas.forEach(v => lines.push(`• ${v.description}: ${fmt.format(v.value)}`))
         lines.push(`Total: ${fmt.format(totalEntradas)}\n`)
       }
-      const saldo = totalEntradas - totalSaidas
       lines.push(`Saldo: ${saldo >= 0 ? '+' : ''}${fmt.format(saldo)}`)
       const text = lines.join('\n')
-
       if (navigator.share) {
         await navigator.share({ text, title: 'Valores' })
       } else {
@@ -130,8 +124,10 @@ export default function App() {
       setShowShareMenu(false)
     }
   }
-  const saldo = totalEntradas - totalSaidas
-  const hasValues = valores.length > 0
+
+  if (authLoading) return <div className="auth-loading" />
+
+  if (!user) return <LoginScreen onLogin={login} loading={loginLoading} />
 
   return (
     <div className="app">
@@ -157,8 +153,14 @@ export default function App() {
               }
             </button>
           )}
-          <button className="btn-primary" onClick={() => setShowInput(true)}>
-            {hasValues ? '✎ Editar valores' : '+ Adicionar valores'}
+          <button className="btn-primary" onClick={() => setShowInput(true)} disabled={dataLoading}>
+            {dataLoading ? '…' : hasValues ? '✎ Editar valores' : '+ Adicionar valores'}
+          </button>
+          <button className="btn-avatar" onClick={logout} title={`Sair (${user.displayName})`}>
+            {user.photoURL
+              ? <img src={user.photoURL} alt={user.displayName ?? ''} className="avatar-img" referrerPolicy="no-referrer" />
+              : <span className="avatar-initial">{(user.displayName ?? user.email ?? '?')[0].toUpperCase()}</span>
+            }
           </button>
         </div>
       </header>
@@ -225,8 +227,8 @@ export default function App() {
 
       {showInput && (
         <ValoresInput
-          initialTextSaida={textSaida}
-          initialTextEntrada={textEntrada}
+          initialTextSaida={data.textSaida}
+          initialTextEntrada={data.textEntrada}
           onApply={handleApply}
           onClose={() => setShowInput(false)}
         />
