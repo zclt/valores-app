@@ -2,6 +2,8 @@ import { useState } from 'react'
 import ValoresInput from './components/ValoresInput'
 import ValorCard from './components/ValorCard'
 import ValoresChart from './components/ValoresChart'
+import ShareMenu from './components/ShareMenu'
+import { generateShareImage } from './utils/shareImage'
 import './App.css'
 
 export type ValorType = 'saida' | 'entrada'
@@ -53,6 +55,8 @@ function loadStorage(): { textSaida: string; textEntrada: string } {
 
 export default function App() {
   const [showInput, setShowInput] = useState(false)
+  const [showShareMenu, setShowShareMenu] = useState(false)
+  const [shareLoading, setShareLoading] = useState<'image' | 'text' | null>(null)
   const [textSaida, setTextSaida] = useState(() => loadStorage().textSaida)
   const [textEntrada, setTextEntrada] = useState(() => loadStorage().textEntrada)
   const [valores, setValores] = useState<Valor[]>(() => {
@@ -76,6 +80,56 @@ export default function App() {
   const entradas = valores.filter(v => v.type === 'entrada')
   const totalSaidas = saidas.reduce((s, v) => s + v.value, 0)
   const totalEntradas = entradas.reduce((s, v) => s + v.value, 0)
+
+  const handleShareImage = async () => {
+    setShareLoading('image')
+    try {
+      const blob = await generateShareImage(saidas, entradas, totalSaidas, totalEntradas)
+      const file = new File([blob], 'valores.png', { type: 'image/png' })
+      if (navigator.canShare?.({ files: [file] })) {
+        await navigator.share({ files: [file], title: 'Valores' })
+      } else {
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = 'valores.png'
+        a.click()
+        URL.revokeObjectURL(url)
+      }
+    } catch { /* cancelled */ } finally {
+      setShareLoading(null)
+      setShowShareMenu(false)
+    }
+  }
+
+  const handleShareText = async () => {
+    setShareLoading('text')
+    try {
+      const lines: string[] = ['-----------\n']
+      if (saidas.length > 0) {
+        lines.push('Saídas')
+        saidas.forEach(v => lines.push(`• ${v.description}: ${fmt.format(v.value)}`))
+        lines.push(`Total: ${fmt.format(totalSaidas)}\n`)
+      }
+      if (entradas.length > 0) {
+        lines.push('Entradas')
+        entradas.forEach(v => lines.push(`• ${v.description}: ${fmt.format(v.value)}`))
+        lines.push(`Total: ${fmt.format(totalEntradas)}\n`)
+      }
+      const saldo = totalEntradas - totalSaidas
+      lines.push(`Saldo: ${saldo >= 0 ? '+' : ''}${fmt.format(saldo)}`)
+      const text = lines.join('\n')
+
+      if (navigator.share) {
+        await navigator.share({ text, title: 'Valores' })
+      } else {
+        await navigator.clipboard.writeText(text)
+      }
+    } catch { /* cancelled */ } finally {
+      setShareLoading(null)
+      setShowShareMenu(false)
+    }
+  }
   const saldo = totalEntradas - totalSaidas
   const hasValues = valores.length > 0
 
@@ -90,9 +144,23 @@ export default function App() {
             </span>
           )}
         </div>
-        <button className="btn-primary" onClick={() => setShowInput(true)}>
-          {hasValues ? '✎ Editar valores' : '+ Adicionar valores'}
-        </button>
+        <div className="header-actions">
+          {hasValues && (
+            <button className="btn-icon" onClick={() => setShowShareMenu(true)} disabled={shareLoading !== null} title="Compartilhar">
+              {shareLoading !== null
+                ? <span className="spinner" />
+                : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                  <polyline points="16 6 12 2 8 6" />
+                  <line x1="12" y1="2" x2="12" y2="15" />
+                </svg>
+              }
+            </button>
+          )}
+          <button className="btn-primary" onClick={() => setShowInput(true)}>
+            {hasValues ? '✎ Editar valores' : '+ Adicionar valores'}
+          </button>
+        </div>
       </header>
 
       {!hasValues ? (
@@ -114,8 +182,8 @@ export default function App() {
               {saidas.length === 0
                 ? <p className="column-empty">Nenhuma saída</p>
                 : saidas.map(v => (
-                    <ValorCard key={v.id} valor={v} onColorChange={() => handleColorChange(v.id)} />
-                  ))
+                  <ValorCard key={v.id} valor={v} onColorChange={() => handleColorChange(v.id)} />
+                ))
               }
             </div>
           </div>
@@ -129,8 +197,8 @@ export default function App() {
               {entradas.length === 0
                 ? <p className="column-empty">Nenhuma entrada</p>
                 : entradas.map(v => (
-                    <ValorCard key={v.id} valor={v} onColorChange={() => handleColorChange(v.id)} />
-                  ))
+                  <ValorCard key={v.id} valor={v} onColorChange={() => handleColorChange(v.id)} />
+                ))
               }
             </div>
           </div>
@@ -143,6 +211,15 @@ export default function App() {
           entradas={entradas}
           totalSaidas={totalSaidas}
           totalEntradas={totalEntradas}
+        />
+      )}
+
+      {showShareMenu && (
+        <ShareMenu
+          onImage={handleShareImage}
+          onText={handleShareText}
+          onClose={() => setShowShareMenu(false)}
+          loading={shareLoading}
         />
       )}
 
