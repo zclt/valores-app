@@ -1,44 +1,54 @@
-# Valores App
+# 💰 Valores
 
-Aplicativo para visualização e controle de receitas e despesas.
+> Controle suas receitas e despesas de forma simples e visual.
 
-## Tecnologias
+Cole seus lançamentos, veja o saldo na hora. Seus dados ficam salvos na nuvem e sincronizam em qualquer dispositivo.
 
-- React 19 + TypeScript
-- Vite
-- Firebase Hosting
+---
 
-## Desenvolvimento
+## Stack
+
+- **React 19** + TypeScript
+- **Vite**
+- **Firebase** — Auth (Google), Firestore, Hosting
+
+---
+
+## Rodando localmente
 
 ```bash
+cp .env.example .env   # preencha as variáveis Firebase
 npm install
-npm run dev
+npm run dev            # http://localhost:5173
 ```
-
-Acesse em `http://localhost:5173`.
 
 ## Build
 
 ```bash
-npm run build
+npm run build          # gera dist/
 ```
-
-Os arquivos de produção são gerados na pasta `dist/`.
 
 ## Deploy
 
-O deploy é feito no Firebase Hosting (`val-ores-app`).
-
 ```bash
-npm run deploy
+npm run deploy         # build + firebase deploy (hosting + firestore rules)
 ```
 
-Este comando executa o build e publica automaticamente.
+**Produção:** https://val-ores-app.web.app
 
-**URL de produção:** https://val-ores-app.web.app
+---
 
-Para deployar apenas o hosting sem rebuild:
+## Variáveis de ambiente
 
-```bash
-firebase deploy --only hosting
+Crie um arquivo `.env` baseado no `.env.example`:
+
 ```
+VITE_FIREBASE_API_KEY=
+VITE_FIREBASE_AUTH_DOMAIN=
+VITE_FIREBASE_PROJECT_ID=
+VITE_FIREBASE_STORAGE_BUCKET=
+VITE_FIREBASE_MESSAGING_SENDER_ID=
+VITE_FIREBASE_APP_ID=
+```
+
+No CI, as mesmas variáveis devem existir como secrets no GitHub Actions.
