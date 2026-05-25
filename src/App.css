@@ -197,6 +197,43 @@
   padding: 2rem 0;
 }
 
+.btn-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: border-color 0.15s;
+  flex-shrink: 0;
+}
+
+.btn-avatar:hover {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-initial {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.auth-loading {
+  min-height: 100svh;
+  background: #0d0d18;
+}
+
 @media (max-width: 560px) {
   .columns {
     grid-template-columns: 1fr;
