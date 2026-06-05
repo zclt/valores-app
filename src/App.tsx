@@ -17,6 +17,7 @@ export interface Valor {
   description: string
   color: string
   type: ValorType
+  done?: boolean
 }
 
 export function randomColor(): string {
@@ -68,6 +69,10 @@ export default function App() {
 
   const handleColorChange = (id: string) => {
     setValores(prev => prev.map(v => v.id === id ? { ...v, color: randomColor() } : v))
+  }
+
+  const handleToggleDone = (id: string) => {
+    setValores(prev => prev.map(v => v.id === id ? { ...v, done: !v.done } : v))
   }
 
   const saidas = valores.filter(v => v.type === 'saida')
@@ -184,7 +189,7 @@ export default function App() {
               {saidas.length === 0
                 ? <p className="column-empty">Nenhuma saída</p>
                 : saidas.map(v => (
-                  <ValorCard key={v.id} valor={v} onColorChange={() => handleColorChange(v.id)} />
+                  <ValorCard key={v.id} valor={v} onColorChange={() => handleColorChange(v.id)} onToggleDone={() => handleToggleDone(v.id)} />
                 ))
               }
             </div>
@@ -199,7 +204,7 @@ export default function App() {
               {entradas.length === 0
                 ? <p className="column-empty">Nenhuma entrada</p>
                 : entradas.map(v => (
-                  <ValorCard key={v.id} valor={v} onColorChange={() => handleColorChange(v.id)} />
+                  <ValorCard key={v.id} valor={v} onColorChange={() => handleColorChange(v.id)} onToggleDone={() => handleToggleDone(v.id)} />
                 ))
               }
             </div>
