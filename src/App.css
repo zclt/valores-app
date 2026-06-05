@@ -33,10 +33,10 @@
 }
 
 .saldo {
-  font-size: 0.9rem;
+  font-size: 0.68rem;
   font-weight: 600;
-  padding: 0.3rem 0.85rem;
-  border-radius: 20px;
+  padding: 0.15rem 0.45rem;
+  border-radius: 8px;
   border: 1px solid transparent;
 }
 
