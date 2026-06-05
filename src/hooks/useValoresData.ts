@@ -5,6 +5,7 @@ import { db } from '../firebase'
 export interface ValoresData {
   textSaida: string
   textEntrada: string
+  doneKeys?: string[]
 }
 
 const EMPTY: ValoresData = { textSaida: '', textEntrada: '' }

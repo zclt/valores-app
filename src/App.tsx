@@ -56,14 +56,16 @@ export default function App() {
   const [valores, setValores] = useState<Valor[]>([])
 
   useEffect(() => {
+    const doneSet = new Set(data.doneKeys ?? [])
+    const applyDone = (v: Valor) => ({ ...v, done: doneSet.has(`${v.type}:${v.description}:${v.value}`) })
     setValores([
-      ...parseValores(data.textSaida, 'saida'),
-      ...parseValores(data.textEntrada, 'entrada'),
+      ...parseValores(data.textSaida, 'saida').map(applyDone),
+      ...parseValores(data.textEntrada, 'entrada').map(applyDone),
     ])
   }, [data])
 
   const handleApply = async (ts: string, te: string) => {
-    await save({ textSaida: ts, textEntrada: te })
+    await save({ textSaida: ts, textEntrada: te, doneKeys: data.doneKeys })
     setShowInput(false)
   }
 
@@ -72,7 +74,10 @@ export default function App() {
   }
 
   const handleToggleDone = (id: string) => {
-    setValores(prev => prev.map(v => v.id === id ? { ...v, done: !v.done } : v))
+    const updated = valores.map(v => v.id === id ? { ...v, done: !v.done } : v)
+    setValores(updated)
+    const doneKeys = updated.filter(v => v.done).map(v => `${v.type}:${v.description}:${v.value}`)
+    save({ textSaida: data.textSaida, textEntrada: data.textEntrada, doneKeys })
   }
 
   const saidas = valores.filter(v => v.type === 'saida')
