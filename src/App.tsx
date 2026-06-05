@@ -114,12 +114,12 @@ export default function App() {
       const lines: string[] = ['-----------\n']
       if (saidas.length > 0) {
         lines.push('Saídas')
-        saidas.forEach(v => lines.push(`• ${v.description}: ${fmt.format(v.value)}`))
+        saidas.forEach(v => lines.push(`${v.done ? '✓' : '•'} ${v.description}: ${fmt.format(v.value)}`))
         lines.push(`Total: ${fmt.format(totalSaidas)}\n`)
       }
       if (entradas.length > 0) {
         lines.push('Entradas')
-        entradas.forEach(v => lines.push(`• ${v.description}: ${fmt.format(v.value)}`))
+        entradas.forEach(v => lines.push(`${v.done ? '✓' : '•'} ${v.description}: ${fmt.format(v.value)}`))
         lines.push(`Total: ${fmt.format(totalEntradas)}\n`)
       }
       lines.push(`Saldo: ${saldo >= 0 ? '+' : ''}${fmt.format(saldo)}`)
