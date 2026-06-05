@@ -58,8 +58,7 @@
   opacity: 0.5;
 }
 
-.card.done .card-value,
-.card.done .card-desc {
+.card.done .card-value {
   text-decoration: line-through;
 }
 

@@ -42,8 +42,13 @@
   letter-spacing: 0.04em;
 }
 
-.saida-label   { color: #f87171; }
-.entrada-label { color: #4ade80; }
+.saida-label {
+  color: #f87171;
+}
+
+.entrada-label {
+  color: #4ade80;
+}
 
 /* Two-column bars */
 .chart-columns {
@@ -87,6 +92,23 @@
   text-overflow: ellipsis;
   grid-column: 1;
   grid-row: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.bar-check {
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.bar-done .bar-value {
+  text-decoration: line-through;
+}
+
+.bar-done .bar-label,
+.bar-done .bar-value {
+  opacity: 0.7;
 }
 
 .bar-value {
@@ -116,14 +138,25 @@
 }
 
 @keyframes growBar {
-  from { clip-path: inset(0 100% 0 0); }
-  to   { clip-path: inset(0 0% 0 0); }
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  to {
+    clip-path: inset(0 0% 0 0);
+  }
 }
 
 @media (max-width: 560px) {
   .chart-columns {
     grid-template-columns: 1fr;
   }
-  .chart-separator { display: none; }
-  .chart-col + .chart-col { margin-top: 1.5rem; }
+
+  .chart-separator {
+    display: none;
+  }
+
+  .chart-col+.chart-col {
+    margin-top: 1.5rem;
+  }
 }

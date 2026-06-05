@@ -13,8 +13,15 @@ const fmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' 
 function Bar({ valor, maxValue }: { valor: Valor; maxValue: number }) {
   const pct = maxValue > 0 ? (valor.value / maxValue) * 100 : 0
   return (
-    <div className="bar-row">
-      <span className="bar-label">{valor.description}</span>
+    <div className={`bar-row${valor.done ? ' bar-done' : ''}`}>
+      <span className="bar-label">
+        {valor.done && (
+          <svg className="bar-check" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        )}
+        {valor.description}
+      </span>
       <div className="bar-track">
         <div className="bar-fill" style={{ width: `${pct}%`, background: valor.color }} />
       </div>
