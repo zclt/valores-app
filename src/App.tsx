@@ -281,7 +281,17 @@ export default function App() {
           }}
           onRemove={id => {
             removeColecao(id)
-            if (activeColecaoId === id) setActiveColecaoId(null)
+            if (activeColecaoId === id) {
+              const remaining = colecoes.filter(c => c.id !== id)
+              if (remaining.length > 0) {
+                const next = remaining[0]
+                save({ textSaida: next.textSaida, textEntrada: next.textEntrada, doneKeys: next.doneKeys })
+                setActiveColecaoId(next.id)
+              } else {
+                save({ textSaida: '', textEntrada: '', doneKeys: [] })
+                setActiveColecaoId(null)
+              }
+            }
           }}
           onRename={renameColecao}
           onClose={() => setShowColecoes(false)}
