@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import ValoresInput from './components/ValoresInput'
 import ValorCard from './components/ValorCard'
 import ValoresChart from './components/ValoresChart'
@@ -59,6 +59,15 @@ export default function App() {
   const [shareLoading, setShareLoading] = useState<'image' | 'text' | null>(null)
   const [valores, setValores] = useState<Valor[]>([])
   const [activeColecaoId, setActiveColecaoId] = useState<string | null>(null)
+  const initialColecaoLoaded = useRef(false)
+
+  useEffect(() => {
+    if (initialColecaoLoaded.current || colecoes.length === 0) return
+    initialColecaoLoaded.current = true
+    const most = colecoes[0]
+    save({ textSaida: most.textSaida, textEntrada: most.textEntrada, doneKeys: most.doneKeys })
+    setActiveColecaoId(most.id)
+  }, [colecoes])
 
   useEffect(() => {
     const doneSet = new Set(data.doneKeys ?? [])
@@ -75,7 +84,12 @@ export default function App() {
     const doneKeys = (data.doneKeys ?? []).filter(k => nextKeys.has(k))
     const updated = { textSaida: ts, textEntrada: te, doneKeys }
     await save(updated)
-    if (activeColecaoId) await updateColecao(activeColecaoId, updated)
+    if (activeColecaoId) {
+      await updateColecao(activeColecaoId, updated)
+    } else if (ts || te) {
+      const id = await saveColecao('Sem nome', updated)
+      if (id) setActiveColecaoId(id)
+    }
     setShowInput(false)
   }
 
