@@ -164,7 +164,7 @@ export default function App() {
             </button>
           )}
           <button className="btn-primary" onClick={() => setShowInput(true)} disabled={dataLoading}>
-            {dataLoading ? '…' : hasValues ? '✎ Editar valores' : '+ Adicionar valores'}
+            {dataLoading ? '…' : hasValues ? '✎ Editar' : '+ Adicionar'}
           </button>
           <button className="btn-avatar" onClick={logout} title={`Sair (${user.displayName})`}>
             {user.photoURL
@@ -180,7 +180,7 @@ export default function App() {
           <div className="empty-icon">₿</div>
           <p>Nenhum valor cadastrado</p>
           <button className="btn-primary" onClick={() => setShowInput(true)}>
-            + Adicionar valores
+            + Adicionar
           </button>
         </div>
       ) : (
