@@ -267,6 +267,14 @@ export default function App() {
             const id = await saveColecao(name, data)
             if (id) setActiveColecaoId(id)
           }}
+          onNewEmpty={async () => {
+            const empty = { textSaida: '', textEntrada: '', doneKeys: [] }
+            const id = await saveColecao('Sem nome', empty)
+            if (id) {
+              await save(empty)
+              setActiveColecaoId(id)
+            }
+          }}
           onLoad={c => {
             save({ textSaida: c.textSaida, textEntrada: c.textEntrada, doneKeys: c.doneKeys })
             setActiveColecaoId(c.id)

@@ -7,6 +7,7 @@ interface Props {
   colecoes: Colecao[]
   activeColecaoId: string | null
   onSave: (name: string) => Promise<void>
+  onNewEmpty: () => Promise<void>
   onLoad: (c: Colecao) => void
   onRemove: (id: string) => void
   onRename: (id: string, name: string) => void
@@ -16,18 +17,17 @@ interface Props {
 const fmtDate = (d: Date) =>
   d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit' })
 
-export default function ColecoesMenu({ colecoes, activeColecaoId, onSave, onLoad, onRemove, onRename, onClose }: Props) {
+export default function ColecoesMenu({ colecoes, activeColecaoId, onSave, onNewEmpty, onLoad, onRemove, onRename, onClose }: Props) {
   const [newName, setNewName] = useState('')
   const [saving, setSaving] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editingName, setEditingName] = useState('')
 
-  const handleSave = async () => {
-    const name = newName.trim()
-    if (!name) return
+  const handleSave = async (name?: string) => {
+    const finalName = (name ?? newName).trim() || 'Sem nome'
     setSaving(true)
     try {
-      await onSave(name)
+      await onSave(finalName)
       setNewName('')
     } finally {
       setSaving(false)
@@ -64,10 +64,19 @@ export default function ColecoesMenu({ colecoes, activeColecaoId, onSave, onLoad
           />
           <button
             className="colecoes-btn-save"
-            onClick={handleSave}
-            disabled={saving || !newName.trim()}
+            onClick={() => handleSave()}
+            disabled={saving}
           >
-            {saving ? '…' : 'Salvar atual'}
+            {saving ? '…' : 'Salvar'}
+          </button>
+        </div>
+        <div className="colecoes-nova-row">
+          <button
+            className="colecoes-btn-nova"
+            onClick={async () => { setSaving(true); try { await onNewEmpty(); onClose() } finally { setSaving(false) } }}
+            disabled={saving}
+          >
+            + Nova coleção sem nome
           </button>
         </div>
 

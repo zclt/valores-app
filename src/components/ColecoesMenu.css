@@ -89,6 +89,30 @@
 .colecoes-btn-save:hover:not(:disabled) { background: #4f46e5; }
 .colecoes-btn-save:disabled { opacity: 0.45; cursor: default; }
 
+.colecoes-nova-row {
+  padding: 0 1rem 0.75rem;
+}
+
+.colecoes-btn-nova {
+  width: 100%;
+  background: none;
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 0.45rem;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.colecoes-btn-nova:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.colecoes-btn-nova:disabled { opacity: 0.4; cursor: default; }
+
 .colecoes-empty {
   color: rgba(255, 255, 255, 0.25);
   font-size: 0.82rem;
