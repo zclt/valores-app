@@ -3,10 +3,12 @@ import ValoresInput from './components/ValoresInput'
 import ValorCard from './components/ValorCard'
 import ValoresChart from './components/ValoresChart'
 import ShareMenu from './components/ShareMenu'
+import ColecoesMenu from './components/ColecoesMenu'
 import LoginScreen from './components/LoginScreen'
 import { generateShareImage } from './utils/shareImage'
 import { useAuth } from './hooks/useAuth'
 import { useValoresData } from './hooks/useValoresData'
+import { useColecoes } from './hooks/useColecoes'
 import './App.css'
 
 export type ValorType = 'saida' | 'entrada'
@@ -49,11 +51,14 @@ const fmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' 
 export default function App() {
   const { user, loading: authLoading, loginLoading, login, logout } = useAuth()
   const { data, loading: dataLoading, save } = useValoresData(user?.uid ?? null)
+  const { colecoes, saveColecao, updateColecao, removeColecao, renameColecao } = useColecoes(user?.uid ?? null)
 
   const [showInput, setShowInput] = useState(false)
   const [showShareMenu, setShowShareMenu] = useState(false)
+  const [showColecoes, setShowColecoes] = useState(false)
   const [shareLoading, setShareLoading] = useState<'image' | 'text' | null>(null)
   const [valores, setValores] = useState<Valor[]>([])
+  const [activeColecaoId, setActiveColecaoId] = useState<string | null>(null)
 
   useEffect(() => {
     const doneSet = new Set(data.doneKeys ?? [])
@@ -68,7 +73,9 @@ export default function App() {
     const next = [...parseValores(ts, 'saida'), ...parseValores(te, 'entrada')]
     const nextKeys = new Set(next.map(v => `${v.type}:${v.description}:${v.value}`))
     const doneKeys = (data.doneKeys ?? []).filter(k => nextKeys.has(k))
-    await save({ textSaida: ts, textEntrada: te, doneKeys })
+    const updated = { textSaida: ts, textEntrada: te, doneKeys }
+    await save(updated)
+    if (activeColecaoId) await updateColecao(activeColecaoId, updated)
     setShowInput(false)
   }
 
@@ -80,8 +87,12 @@ export default function App() {
     const updated = valores.map(v => v.id === id ? { ...v, done: !v.done } : v)
     setValores(updated)
     const doneKeys = updated.filter(v => v.done).map(v => `${v.type}:${v.description}:${v.value}`)
-    save({ textSaida: data.textSaida, textEntrada: data.textEntrada, doneKeys })
+    const updatedData = { textSaida: data.textSaida, textEntrada: data.textEntrada, doneKeys }
+    save(updatedData)
+    if (activeColecaoId) updateColecao(activeColecaoId, updatedData)
   }
+
+  const activeColecao = colecoes.find(c => c.id === activeColecaoId) ?? null
 
   const saidas = valores.filter(v => v.type === 'saida')
   const entradas = valores.filter(v => v.type === 'entrada')
@@ -146,7 +157,12 @@ export default function App() {
     <div className="app">
       <header className="header">
         <div className="header-left">
-          <h1 className="title">Valores</h1>
+          <div className="title-group">
+            <h1 className="title">Valores</h1>
+            {activeColecao && (
+              <span className="colecao-nome">{activeColecao.name}</span>
+            )}
+          </div>
           {hasValues && (
             <span className={`saldo ${saldo >= 0 ? 'positivo' : 'negativo'}`}>
               {saldo >= 0 ? '+' : ''}{fmt.format(saldo)}
@@ -154,6 +170,11 @@ export default function App() {
           )}
         </div>
         <div className="header-actions">
+          <button className="btn-icon" onClick={() => setShowColecoes(true)} title="Coleções">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+            </svg>
+          </button>
           {hasValues && (
             <button className="btn-icon" onClick={() => setShowShareMenu(true)} disabled={shareLoading !== null} title="Compartilhar">
               {shareLoading !== null
@@ -235,6 +256,27 @@ export default function App() {
           onText={handleShareText}
           onClose={() => setShowShareMenu(false)}
           loading={shareLoading}
+        />
+      )}
+
+      {showColecoes && (
+        <ColecoesMenu
+          colecoes={colecoes}
+          activeColecaoId={activeColecaoId}
+          onSave={async name => {
+            const id = await saveColecao(name, data)
+            if (id) setActiveColecaoId(id)
+          }}
+          onLoad={c => {
+            save({ textSaida: c.textSaida, textEntrada: c.textEntrada, doneKeys: c.doneKeys })
+            setActiveColecaoId(c.id)
+          }}
+          onRemove={id => {
+            removeColecao(id)
+            if (activeColecaoId === id) setActiveColecaoId(null)
+          }}
+          onRename={renameColecao}
+          onClose={() => setShowColecoes(false)}
         />
       )}
 
