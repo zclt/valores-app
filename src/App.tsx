@@ -65,7 +65,10 @@ export default function App() {
   }, [data])
 
   const handleApply = async (ts: string, te: string) => {
-    await save({ textSaida: ts, textEntrada: te, doneKeys: data.doneKeys })
+    const next = [...parseValores(ts, 'saida'), ...parseValores(te, 'entrada')]
+    const nextKeys = new Set(next.map(v => `${v.type}:${v.description}:${v.value}`))
+    const doneKeys = (data.doneKeys ?? []).filter(k => nextKeys.has(k))
+    await save({ textSaida: ts, textEntrada: te, doneKeys })
     setShowInput(false)
   }
 
