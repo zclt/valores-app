@@ -1,0 +1,257 @@
+.colecoes-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  z-index: 200;
+  padding: 1rem;
+}
+
+.colecoes-panel {
+  background: #13131f;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  width: 340px;
+  max-height: calc(100svh - 2rem);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+}
+
+.colecoes-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.1rem 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  flex-shrink: 0;
+}
+
+.colecoes-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.2px;
+}
+
+.colecoes-close {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0.15rem 0.35rem;
+  border-radius: 6px;
+  transition: color 0.15s;
+}
+
+.colecoes-close:hover { color: rgba(255, 255, 255, 0.8); }
+
+.colecoes-save-row {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
+}
+
+.colecoes-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.82rem;
+  padding: 0.5rem 0.75rem;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.colecoes-input::placeholder { color: rgba(255, 255, 255, 0.3); }
+.colecoes-input:focus { border-color: rgba(99, 102, 241, 0.6); }
+
+.colecoes-btn-save {
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.5rem 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.colecoes-btn-save:hover:not(:disabled) { background: #4f46e5; }
+.colecoes-btn-save:disabled { opacity: 0.45; cursor: default; }
+
+.colecoes-nova-row {
+  padding: 0 1rem 0.75rem;
+}
+
+.colecoes-btn-nova {
+  width: 100%;
+  background: none;
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 0.45rem;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.colecoes-btn-nova:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.colecoes-btn-nova:disabled { opacity: 0.4; cursor: default; }
+
+.colecoes-empty {
+  color: rgba(255, 255, 255, 0.25);
+  font-size: 0.82rem;
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.colecoes-list {
+  list-style: none;
+  overflow-y: auto;
+  padding: 0.5rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.colecao-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+  padding: 0.6rem 0.75rem;
+  transition: background 0.15s;
+}
+
+.colecao-item:hover { background: rgba(255, 255, 255, 0.07); }
+
+.colecao-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.colecao-name {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.83rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.15s;
+}
+
+.colecao-name:hover { color: #fff; }
+
+.colecao-rename-input {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.5);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.83rem;
+  font-weight: 600;
+  padding: 0.15rem 0.4rem;
+  outline: none;
+  width: 100%;
+}
+
+.colecao-date {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.colecao-badge-ativa {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #a5b4fc;
+  background: rgba(99, 102, 241, 0.18);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: 4px;
+  padding: 0.05rem 0.35rem;
+}
+
+.colecao-ativa {
+  border-color: rgba(99, 102, 241, 0.35);
+  background: rgba(99, 102, 241, 0.07);
+}
+
+.colecao-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.colecao-btn-load {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  color: rgba(99, 102, 241, 0.9);
+  border-radius: 7px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.colecao-btn-load:hover {
+  background: rgba(99, 102, 241, 0.28);
+  color: #a5b4fc;
+}
+
+.colecao-btn-remove {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  padding: 0.3rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s, background 0.15s;
+}
+
+.colecao-btn-remove:hover {
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.1);
+}
+
+@media (max-width: 400px) {
+  .colecoes-overlay { padding: 0; align-items: flex-end; }
+  .colecoes-panel { width: 100%; border-radius: 16px 16px 0 0; }
+}
