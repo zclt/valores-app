@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import type { Colecao } from '../hooks/useColecoes'
-import type { ValoresData } from '../hooks/useValoresData'
 import './ColecoesMenu.css'
 
 interface Props {
@@ -87,59 +86,60 @@ export default function ColecoesMenu({ colecoes, activeColecaoId, onSave, onNewE
             {colecoes.map(c => {
               const isActive = c.id === activeColecaoId
               return (
-              <li key={c.id} className={`colecao-item${isActive ? ' colecao-ativa' : ''}`}>
-                <div className="colecao-info">
-                  {editingId === c.id ? (
-                    <input
-                      className="colecao-rename-input"
-                      value={editingName}
-                      onChange={e => setEditingName(e.target.value)}
-                      onBlur={() => commitRename(c.id)}
-                      onKeyDown={e => {
-                        if (e.key === 'Enter') commitRename(c.id)
-                        if (e.key === 'Escape') setEditingId(null)
-                      }}
-                      autoFocus
-                    />
-                  ) : (
-                    <button className="colecao-name" onClick={() => startRename(c)} title="Clique para renomear">
-                      {c.name}
+                <li key={c.id} className={`colecao-item${isActive ? ' colecao-ativa' : ''}`}>
+                  <div className="colecao-info">
+                    {editingId === c.id ? (
+                      <input
+                        className="colecao-rename-input"
+                        value={editingName}
+                        onChange={e => setEditingName(e.target.value)}
+                        onBlur={() => commitRename(c.id)}
+                        onKeyDown={e => {
+                          if (e.key === 'Enter') commitRename(c.id)
+                          if (e.key === 'Escape') setEditingId(null)
+                        }}
+                        autoFocus
+                      />
+                    ) : (
+                      <button className="colecao-name" onClick={() => startRename(c)} title="Clique para renomear">
+                        {c.name}
+                      </button>
+                    )}
+                    <span className="colecao-date">
+                      {isActive && <span className="colecao-badge-ativa">ativo</span>}
+                      {fmtDate(c.savedAt)}
+                    </span>
+                  </div>
+                  <div className="colecao-actions">
+                    {!isActive && (
+                      <button
+                        className="colecao-btn-load"
+                        onClick={() => { onLoad(c); onClose() }}
+                        title="Carregar"
+                      >
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                          <polyline points="7 10 12 15 17 10" />
+                          <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                        Carregar
+                      </button>
+                    )}
+                    <button
+                      className="colecao-btn-remove"
+                      onClick={() => onRemove(c.id)}
+                      title="Remover"
+                    >
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="3 6 5 6 21 6" />
+                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                        <path d="M10 11v6M14 11v6" />
+                      </svg>
                     </button>
-                  )}
-                  <span className="colecao-date">
-                    {isActive && <span className="colecao-badge-ativa">ativo</span>}
-                    {fmtDate(c.savedAt)}
-                  </span>
-                </div>
-                <div className="colecao-actions">
-                  {!isActive && (
-                  <button
-                    className="colecao-btn-load"
-                    onClick={() => { onLoad(c); onClose() }}
-                    title="Carregar"
-                  >
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                      <polyline points="7 10 12 15 17 10" />
-                      <line x1="12" y1="15" x2="12" y2="3" />
-                    </svg>
-                    Carregar
-                  </button>
-                  )}
-                  <button
-                    className="colecao-btn-remove"
-                    onClick={() => onRemove(c.id)}
-                    title="Remover"
-                  >
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="3 6 5 6 21 6" />
-                      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                      <path d="M10 11v6M14 11v6" />
-                    </svg>
-                  </button>
-                </div>
-              </li>
-            )})}
+                  </div>
+                </li>
+              )
+            })}
           </ul>
         )}
       </div>
