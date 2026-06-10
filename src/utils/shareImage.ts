@@ -134,6 +134,8 @@ export async function generateShareImage(
     const maxVal = Math.max(...[...saidas, ...entradas].map(v => v.value), 1)
 
     items.forEach(item => {
+      ctx.globalAlpha = item.done ? 0.4 : 1
+
       // row bg
       rr(ctx, cx, cy, COL_W, ROW_H - 4, 8)
       ctx.fillStyle = 'rgba(255,255,255,0.04)'
@@ -147,21 +149,49 @@ export async function generateShareImage(
       // proportion fill
       const pct = item.value / maxVal
       rr(ctx, cx, cy, Math.max(4, COL_W * pct), ROW_H - 4, 8)
-      ctx.globalAlpha = 0.18
+      ctx.globalAlpha = item.done ? 0.07 : 0.18
       ctx.fillStyle = item.color
       ctx.fill()
-      ctx.globalAlpha = 1
+      ctx.globalAlpha = item.done ? 0.4 : 1
+
+      // check icon (done)
+      const descX = cx + 12
+      if (item.done) {
+        ctx.strokeStyle = 'rgba(255,255,255,0.7)'
+        ctx.lineWidth = 1.5
+        ctx.lineCap = 'round'
+        ctx.lineJoin = 'round'
+        ctx.beginPath()
+        ctx.moveTo(descX, cy + 10)
+        ctx.lineTo(descX + 4, cy + 14)
+        ctx.lineTo(descX + 9, cy + 6)
+        ctx.stroke()
+      }
 
       // description
       ctx.font = font(11, 500)
       ctx.fillStyle = 'rgba(255,255,255,0.6)'
-      ctx.fillText(clip(ctx, item.description, COL_W - 24), cx + 12, cy + 14)
+      const descOffsetX = item.done ? descX + 13 : descX
+      ctx.fillText(clip(ctx, item.description, COL_W - 24), descOffsetX, cy + 14)
 
       // value
       ctx.font = font(13, 700)
       ctx.fillStyle = '#ffffff'
-      ctx.fillText(fmt.format(item.value), cx + 12, cy + 30)
+      const valTxt = fmt.format(item.value)
+      ctx.fillText(valTxt, cx + 12, cy + 30)
 
+      // strikethrough on value (done)
+      if (item.done) {
+        const valW = ctx.measureText(valTxt).width
+        ctx.strokeStyle = 'rgba(255,255,255,0.8)'
+        ctx.lineWidth = 1.5
+        ctx.beginPath()
+        ctx.moveTo(cx + 12, cy + 23)
+        ctx.lineTo(cx + 12 + valW, cy + 23)
+        ctx.stroke()
+      }
+
+      ctx.globalAlpha = 1
       cy += ROW_H
     })
   }
