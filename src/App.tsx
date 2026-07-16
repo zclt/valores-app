@@ -70,13 +70,16 @@ export default function App() {
   }, [colecoes])
 
   useEffect(() => {
-    const doneSet = new Set(data.doneKeys ?? [])
-    const applyDone = (v: Valor) => ({ ...v, done: doneSet.has(`${v.type}:${v.description}:${v.value}`) })
     setValores([
-      ...parseValores(data.textSaida, 'saida').map(applyDone),
-      ...parseValores(data.textEntrada, 'entrada').map(applyDone),
+      ...parseValores(data.textSaida, 'saida'),
+      ...parseValores(data.textEntrada, 'entrada'),
     ])
-  }, [data])
+  }, [data.textSaida, data.textEntrada])
+
+  useEffect(() => {
+    const doneSet = new Set(data.doneKeys ?? [])
+    setValores(prev => prev.map(v => ({ ...v, done: doneSet.has(`${v.type}:${v.description}:${v.value}`) })))
+  }, [data.doneKeys])
 
   const handleApply = async (ts: string, te: string) => {
     const next = [...parseValores(ts, 'saida'), ...parseValores(te, 'entrada')]
