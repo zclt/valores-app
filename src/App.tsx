@@ -4,8 +4,10 @@ import ValorCard from './components/ValorCard'
 import ValoresChart from './components/ValoresChart'
 import ShareMenu from './components/ShareMenu'
 import ColecoesMenu from './components/ColecoesMenu'
+import CompararModal from './components/CompararModal'
 import LoginScreen from './components/LoginScreen'
 import { generateShareImage } from './utils/shareImage'
+import { parseValores, randomColor } from './utils/parseValores'
 import { useAuth } from './hooks/useAuth'
 import { useValoresData } from './hooks/useValoresData'
 import { useColecoes } from './hooks/useColecoes'
@@ -22,30 +24,6 @@ export interface Valor {
   done?: boolean
 }
 
-export function randomColor(): string {
-  const hue = Math.floor(Math.random() * 360)
-  const sat = 65 + Math.floor(Math.random() * 20)
-  const light = 45 + Math.floor(Math.random() * 12)
-  return `hsl(${hue}, ${sat}%, ${light}%)`
-}
-
-function parseValores(text: string, type: ValorType): Valor[] {
-  return text
-    .split('\n')
-    .map(l => l.trim())
-    .filter(Boolean)
-    .reduce<Valor[]>((acc, line) => {
-      const match = line.match(/^([\d.,]+)\s+(.+)$/)
-      if (!match) return acc
-      const raw = match[1].replace(/\./g, '').replace(',', '.')
-      const value = parseFloat(raw)
-      if (isNaN(value)) return acc
-      acc.push({ id: crypto.randomUUID(), value, description: match[2], color: randomColor(), type })
-      return acc
-    }, [])
-    .sort((a, b) => b.value - a.value)
-}
-
 const fmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })
 
 export default function App() {
@@ -56,6 +34,7 @@ export default function App() {
   const [showInput, setShowInput] = useState(false)
   const [showShareMenu, setShowShareMenu] = useState(false)
   const [showColecoes, setShowColecoes] = useState(false)
+  const [showCompare, setShowCompare] = useState(false)
   const [shareLoading, setShareLoading] = useState<'image' | 'text' | null>(null)
   const [valores, setValores] = useState<Valor[]>([])
   const [activeColecaoId, setActiveColecaoId] = useState<string | null>(null)
@@ -192,6 +171,15 @@ export default function App() {
               <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
             </svg>
           </button>
+          {colecoes.length >= 2 && (
+            <button className="btn-icon" onClick={() => setShowCompare(true)} title="Comparar">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="20" x2="18" y2="10" />
+                <line x1="12" y1="20" x2="12" y2="4" />
+                <line x1="6" y1="20" x2="6" y2="14" />
+              </svg>
+            </button>
+          )}
           {hasValues && (
             <button className="btn-icon" onClick={() => setShowShareMenu(true)} disabled={shareLoading !== null} title="Compartilhar">
               {shareLoading !== null
@@ -313,6 +301,10 @@ export default function App() {
           onRename={renameColecao}
           onClose={() => setShowColecoes(false)}
         />
+      )}
+
+      {showCompare && (
+        <CompararModal colecoes={colecoes} onClose={() => setShowCompare(false)} />
       )}
 
       {showInput && (
