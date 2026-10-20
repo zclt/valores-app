@@ -11,6 +11,7 @@ import { parseValores, randomColor } from './utils/parseValores'
 import { useAuth } from './hooks/useAuth'
 import { useValoresData } from './hooks/useValoresData'
 import { useColecoes } from './hooks/useColecoes'
+import { useTheme } from './hooks/useTheme'
 import './App.css'
 
 export type ValorType = 'saida' | 'entrada'
@@ -30,6 +31,7 @@ export default function App() {
   const { user, loading: authLoading, loginLoading, login, logout } = useAuth()
   const { data, loading: dataLoading, save } = useValoresData(user?.uid ?? null)
   const { colecoes, saveColecao, updateColecao, removeColecao, renameColecao } = useColecoes(user?.uid ?? null)
+  const { theme, toggleTheme } = useTheme()
 
   const [showInput, setShowInput] = useState(false)
   const [showShareMenu, setShowShareMenu] = useState(false)
@@ -166,6 +168,22 @@ export default function App() {
           )}
         </div>
         <div className="header-actions">
+          <button
+            className="btn-icon"
+            onClick={toggleTheme}
+            title={theme === 'dark' ? 'Modo claro' : 'Modo escuro'}
+            aria-label={theme === 'dark' ? 'Ativar modo claro' : 'Ativar modo escuro'}
+          >
+            {theme === 'dark'
+              ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+              </svg>
+              : <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+            }
+          </button>
           <button className="btn-icon" onClick={() => setShowColecoes(true)} title="Coleções">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />

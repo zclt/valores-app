@@ -1,7 +1,7 @@
 .colecoes-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
+  background: var(--overlay);
   display: flex;
   align-items: flex-start;
   justify-content: flex-end;
@@ -10,8 +10,8 @@
 }
 
 .colecoes-panel {
-  background: #13131f;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--surface);
+  border: 1px solid rgb(var(--ink) / 0.1);
   border-radius: 16px;
   width: 340px;
   max-height: calc(100svh - 2rem);
@@ -26,21 +26,21 @@
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.1rem 0.75rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  border-bottom: 1px solid rgb(var(--ink) / 0.07);
   flex-shrink: 0;
 }
 
 .colecoes-title {
   font-size: 0.9rem;
   font-weight: 700;
-  color: #fff;
+  color: rgb(var(--ink));
   letter-spacing: -0.2px;
 }
 
 .colecoes-close {
   background: none;
   border: none;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgb(var(--ink) / 0.4);
   cursor: pointer;
   font-size: 0.85rem;
   padding: 0.15rem 0.35rem;
@@ -48,29 +48,29 @@
   transition: color 0.15s;
 }
 
-.colecoes-close:hover { color: rgba(255, 255, 255, 0.8); }
+.colecoes-close:hover { color: rgb(var(--ink) / 0.8); }
 
 .colecoes-save-row {
   display: flex;
   gap: 0.5rem;
   padding: 0.85rem 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgb(var(--ink) / 0.06);
   flex-shrink: 0;
 }
 
 .colecoes-input {
   flex: 1;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgb(var(--ink) / 0.06);
+  border: 1px solid rgb(var(--ink) / 0.1);
   border-radius: 8px;
-  color: #fff;
+  color: rgb(var(--ink));
   font-size: 0.82rem;
   padding: 0.5rem 0.75rem;
   outline: none;
   transition: border-color 0.15s;
 }
 
-.colecoes-input::placeholder { color: rgba(255, 255, 255, 0.3); }
+.colecoes-input::placeholder { color: rgb(var(--ink) / 0.3); }
 .colecoes-input:focus { border-color: rgba(99, 102, 241, 0.6); }
 
 .colecoes-btn-save {
@@ -96,9 +96,9 @@
 .colecoes-btn-nova {
   width: 100%;
   background: none;
-  border: 1px dashed rgba(255, 255, 255, 0.12);
+  border: 1px dashed rgb(var(--ink) / 0.12);
   border-radius: 8px;
-  color: rgba(255, 255, 255, 0.35);
+  color: rgb(var(--ink) / 0.35);
   font-size: 0.78rem;
   font-weight: 500;
   padding: 0.45rem;
@@ -107,14 +107,14 @@
 }
 
 .colecoes-btn-nova:hover:not(:disabled) {
-  border-color: rgba(255, 255, 255, 0.25);
-  color: rgba(255, 255, 255, 0.6);
+  border-color: rgb(var(--ink) / 0.25);
+  color: rgb(var(--ink) / 0.6);
 }
 
 .colecoes-btn-nova:disabled { opacity: 0.4; cursor: default; }
 
 .colecoes-empty {
-  color: rgba(255, 255, 255, 0.25);
+  color: rgb(var(--ink) / 0.25);
   font-size: 0.82rem;
   text-align: center;
   padding: 2rem 1rem;
@@ -134,14 +134,14 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgb(var(--ink) / 0.04);
+  border: 1px solid rgb(var(--ink) / 0.07);
   border-radius: 10px;
   padding: 0.6rem 0.75rem;
   transition: background 0.15s;
 }
 
-.colecao-item:hover { background: rgba(255, 255, 255, 0.07); }
+.colecao-item:hover { background: rgb(var(--ink) / 0.07); }
 
 .colecao-info {
   display: flex;
@@ -154,7 +154,7 @@
 .colecao-name {
   background: none;
   border: none;
-  color: rgba(255, 255, 255, 0.88);
+  color: rgb(var(--ink) / 0.88);
   font-size: 0.83rem;
   font-weight: 600;
   cursor: pointer;
@@ -166,13 +166,13 @@
   transition: color 0.15s;
 }
 
-.colecao-name:hover { color: #fff; }
+.colecao-name:hover { color: rgb(var(--ink)); }
 
 .colecao-rename-input {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgb(var(--ink) / 0.08);
   border: 1px solid rgba(99, 102, 241, 0.5);
   border-radius: 6px;
-  color: #fff;
+  color: rgb(var(--ink));
   font-size: 0.83rem;
   font-weight: 600;
   padding: 0.15rem 0.4rem;
@@ -182,7 +182,7 @@
 
 .colecao-date {
   font-size: 0.72rem;
-  color: rgba(255, 255, 255, 0.3);
+  color: rgb(var(--ink) / 0.3);
   display: flex;
   align-items: center;
   gap: 0.35rem;
@@ -193,7 +193,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #a5b4fc;
+  color: var(--accent-text);
   background: rgba(99, 102, 241, 0.18);
   border: 1px solid rgba(99, 102, 241, 0.3);
   border-radius: 4px;
@@ -230,13 +230,13 @@
 
 .colecao-btn-load:hover {
   background: rgba(99, 102, 241, 0.28);
-  color: #a5b4fc;
+  color: var(--accent-text);
 }
 
 .colecao-btn-remove {
   background: none;
   border: none;
-  color: rgba(255, 255, 255, 0.25);
+  color: rgb(var(--ink) / 0.25);
   cursor: pointer;
   padding: 0.3rem;
   border-radius: 6px;
@@ -247,7 +247,7 @@
 }
 
 .colecao-btn-remove:hover {
-  color: #f87171;
+  color: var(--neg);
   background: rgba(248, 113, 113, 0.1);
 }
 
