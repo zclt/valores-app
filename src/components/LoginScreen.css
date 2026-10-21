@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #0d0d18;
+  background: var(--bg);
 }
 
 .login-card {
@@ -12,8 +12,8 @@
   align-items: center;
   gap: 10px;
   padding: 2.5rem 2rem;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgb(var(--ink) / 0.04);
+  border: 1px solid rgb(var(--ink) / 0.1);
   border-radius: 20px;
   text-align: center;
 }
@@ -27,13 +27,13 @@
   font-size: 1.8rem;
   font-weight: 700;
   letter-spacing: -0.5px;
-  color: #fff;
+  color: rgb(var(--ink));
   margin: 0;
 }
 
 .login-subtitle {
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgb(var(--ink) / 0.45);
   margin: 0 0 12px;
 }
 

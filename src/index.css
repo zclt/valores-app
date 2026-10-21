@@ -2,12 +2,41 @@
   box-sizing: border-box;
 }
 
+/* Theme tokens — dark is the default; light applies via <html data-theme="light"> (see useTheme). */
+:root {
+  color-scheme: dark;
+  --bg: #0d0d18;
+  --surface: #13131f;
+  --surface-2: #16162a;
+  --ink: 255 255 255;
+  --overlay: rgba(0, 0, 0, 0.6);
+  --pos: #4ade80;
+  --neg: #f87171;
+  --accent-text: #a5b4fc;
+  --serie-a-text: #6ba7ee;
+  --serie-b-text: #e0a542;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f4f4f8;
+  --surface: #ffffff;
+  --surface-2: #ffffff;
+  --ink: 22 22 42;
+  --overlay: rgba(22, 22, 42, 0.35);
+  --pos: #15803d;
+  --neg: #dc2626;
+  --accent-text: #4f46e5;
+  --serie-a-text: #1d6fd1;
+  --serie-b-text: #a16207;
+}
+
 body {
   margin: 0;
-  background: #0d0d18;
+  background: var(--bg);
   font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
-  color: #fff;
+  color: rgb(var(--ink));
   min-height: 100svh;
 }
 

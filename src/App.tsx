@@ -11,6 +11,7 @@ import { parseValores, randomColor } from './utils/parseValores'
 import { useAuth } from './hooks/useAuth'
 import { useValoresData } from './hooks/useValoresData'
 import { useColecoes } from './hooks/useColecoes'
+import { useTheme } from './hooks/useTheme'
 import './App.css'
 
 export type ValorType = 'saida' | 'entrada'
@@ -30,6 +31,7 @@ export default function App() {
   const { user, loading: authLoading, loginLoading, login, logout } = useAuth()
   const { data, loading: dataLoading, save } = useValoresData(user?.uid ?? null)
   const { colecoes, saveColecao, updateColecao, removeColecao, renameColecao } = useColecoes(user?.uid ?? null)
+  const { theme, toggleTheme } = useTheme()
 
   const [showInput, setShowInput] = useState(false)
   const [showShareMenu, setShowShareMenu] = useState(false)
@@ -166,13 +168,29 @@ export default function App() {
           )}
         </div>
         <div className="header-actions">
-          <button className="btn-icon" onClick={() => setShowColecoes(true)} title="Coleções">
+          <button
+            className="btn-icon"
+            onClick={toggleTheme}
+            data-hint={theme === 'dark' ? 'Modo claro' : 'Modo escuro'}
+            aria-label={theme === 'dark' ? 'Ativar modo claro' : 'Ativar modo escuro'}
+          >
+            {theme === 'dark'
+              ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+              </svg>
+              : <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+            }
+          </button>
+          <button className="btn-icon" onClick={() => setShowColecoes(true)} data-hint="Coleções" aria-label="Coleções">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
             </svg>
           </button>
           {colecoes.length >= 2 && (
-            <button className="btn-icon" onClick={() => setShowCompare(true)} title="Comparar">
+            <button className="btn-icon" onClick={() => setShowCompare(true)} data-hint="Comparar" aria-label="Comparar">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="18" y1="20" x2="18" y2="10" />
                 <line x1="12" y1="20" x2="12" y2="4" />
@@ -181,7 +199,7 @@ export default function App() {
             </button>
           )}
           {hasValues && (
-            <button className="btn-icon" onClick={() => setShowShareMenu(true)} disabled={shareLoading !== null} title="Compartilhar">
+            <button className="btn-icon" onClick={() => setShowShareMenu(true)} disabled={shareLoading !== null} data-hint="Compartilhar" aria-label="Compartilhar">
               {shareLoading !== null
                 ? <span className="spinner" />
                 : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -192,10 +210,25 @@ export default function App() {
               }
             </button>
           )}
-          <button className="btn-primary" onClick={() => setShowInput(true)} disabled={dataLoading}>
-            {dataLoading ? '…' : hasValues ? '✎ Editar' : '+ Adicionar'}
+          <button
+            className="btn-icon btn-icon-primary"
+            onClick={() => setShowInput(true)}
+            disabled={dataLoading}
+            data-hint={hasValues ? 'Editar' : 'Adicionar'}
+            aria-label={hasValues ? 'Editar' : 'Adicionar'}
+          >
+            {hasValues
+              ? <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 20h9" />
+                <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z" />
+              </svg>
+              : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+            }
           </button>
-          <button className="btn-avatar" onClick={logout} title={`Sair (${user.displayName})`}>
+          <button className="btn-avatar" onClick={logout} data-hint="Sair" aria-label={`Sair (${user.displayName})`}>
             {user.photoURL
               ? <img src={user.photoURL} alt={user.displayName ?? ''} className="avatar-img" referrerPolicy="no-referrer" />
               : <span className="avatar-initial">{(user.displayName ?? user.email ?? '?')[0].toUpperCase()}</span>
